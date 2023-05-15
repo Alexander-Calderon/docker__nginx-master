@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      #expongo el puerto del 81 para configurar el panel y le asigno un subdominio, luego ya configurado, lo elimino y vuelvo a desplegar ya sin exponer el puerto 81
+      #de esta forma no será accesible mediante puerto al público, sino solo mediante x subdominio configurado.
+      #- '35089:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      #red_nginx:
+      red_nginx:
+        ipv4_address: 172.18.100.100
+    container_name: nginx_master
+networks:
+  #red_nginx:
+  red_nginx:
+    external: true
+    #ipam:
+     # config:
+      #  - subnet: 172.18.0.0/16 #65536 direcciones ip disponibles.
+       #   ip_range: 172.18.0.0/24 #rango de 172.18.0.0 a 172.18.0.255
+        #  gateway: 172.18.0.1 #puerta de enlace/salida, comunicador
